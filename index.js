@@ -29,18 +29,13 @@ app.post("/upload-video", upload.single("video"), (req, res) => {
     filepath: req.file.path
   });
 });
-
-// AI process
 app.post("/process", (req, res) => {
-  res.json({
-    status: "Processing done",
-    outputUrl: "https://dummy.ai/output.mp4"
-  });
-})
-const PORT = process.env.PORT || 3000;
+    res.json({
+        status: "Processing done",
+            outputUrl: "https://dummy.ai/output.mp4"
+              });
+              });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("Server running on PORT:", PORT);
-  });
-  
+              const PORT = process.env.PORT || 3000;
+              app.listen(PORT, () => console.log("Server running on port", PORT));
 
