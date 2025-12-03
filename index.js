@@ -1,41 +1,49 @@
+
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Storage for uploaded videos
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + path.extname(file.originalname))
-});
+// Make sure uploads folder exists
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+  }
 
-const upload = multer({ storage });
+  // Configure multer storage
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "uploads/"),
+      filename: (req, file, cb) =>
+          cb(null, Date.now() + path.extname(file.originalname)),
+          });
 
-// TEST route
-app.get("/", (req, res) => {
-  res.json({ status: "Backend OK" });
-});
+          const upload = multer({ storage });
 
-// Upload video
-app.post("/upload-video", upload.single("video"), (req, res) => {
-  console.log("Video uploaded:", req.file);
-  res.json({
-    message: "Uploaded successfully",
-    filepath: req.file.path
-  });
-});
-app.post("/process", (req, res) => {
-    res.json({
-        status: "Processing done",
-            outputUrl: "https://dummy.ai/output.mp4"
-              });
-              });
+          // Root route
+          app.get("/", (req, res) => {
+            res.json({ status: "Backend working 🚀" });
+            });
 
-              const PORT = process.env.PORT || 3000;
-              app.listen(PORT, () => console.log("Server running on port", PORT));
+            // Main Upload Route - THE ONE YOUR EXPO APP CALLS
+            app.post("/upload-video", upload.single("video"), (req, res) => {
+              console.log("UPLOAD ROUTE HIT");
 
+                if (!req.file) {
+                    return res.status(400).json({ error: "No video file received" });
+                      }
+
+                        res.json({
+                            success: true,
+                                message: "Video uploaded successfully!",
+                                    filename: req.file.filename,
+                                      });
+                                      });
+
+                                      // Start server
+                                      const PORT = process.env.PORT || 3000;
+                                      app.listen(PORT, () => console.log("Server running on port", PORT));
