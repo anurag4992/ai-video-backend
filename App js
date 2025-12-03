@@ -1,0 +1,13 @@
+import { API_URL } from './config';
+const fetchData = async () => {
+      try {
+          const response = await fetch(`${API_URL}/your-endpoint`);
+              const data = await response.json();
+                  console.log(data);
+                    } catch (error) {
+                        console.error(error);
+                          }
+                          };
+
+                          fetchData();
+
